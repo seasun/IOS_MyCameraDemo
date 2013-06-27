@@ -9,9 +9,12 @@
 #import "MainViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "CameraOverlayView.h"
 
-@interface MainViewController ()
-
+@interface MainViewController ()<CameraOverlayViewDelegate>
+{
+    UIImagePickerController *imageController;
+}
 @end
 
 @implementation MainViewController
@@ -29,7 +32,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    UIButton *cameraButton = [[UIButton alloc]initWithFrame:CGRectMake((MAIN_FRAME.size.width-250)/2, 30, 250, 50)];
+    UIButton *cameraButton = [[UIButton alloc]initWithFrame:CGRectMake((FRAME_WITH_STATUS_BAR.size.width-250)/2, 30, 250, 50)];
     cameraButton.backgroundColor = [UIColor blueColor];
     [cameraButton setTitle:@"照 相" forState:UIControlStateNormal];
     cameraButton.layer.cornerRadius = 0.5f;
@@ -39,15 +42,31 @@
 }
 
 - (void)showCamera:(UIButton *)sender{
-    UIImagePickerController *imageController = [[UIImagePickerController alloc]init];
+    imageController = [[UIImagePickerController alloc]init];
     imageController.sourceType =
     //    UIImagePickerControllerSourceTypePhotoLibrary; //图片库,默认 先分类，再跳到图片集
     //    UIImagePickerControllerSourceTypeSavedPhotosAlbum;//胶卷 图片流的呈现方式
     UIImagePickerControllerSourceTypeCamera; //摄像头
     
     imageController.mediaTypes =[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
+    CameraOverlayView *overlayView = [[CameraOverlayView alloc]initWithFrame:CGRectMake(0, 0, 320, FULL_FRAME.size.height-1)];
+    overlayView.delegate = self;
+//    imageController.cameraOverlayView = overlayView;
+//    NSLog(@"MAIN_FRAME_NOT_BOUNDS:%@",NSStringFromCGRect(FULL_FRAME));
+//    imageController.showsCameraControls = NO;
     imageController.delegate = self;
+//    CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.23, 1.23);
+//    imageController.cameraViewTransform = cameraTransform;
     [self presentViewController:imageController animated:YES completion:nil];
+}
+
+#pragma CameraOverlayViewDelegate
+- (void)cancelUIImagePicker{
+    [imageController dismissModalViewControllerAnimated:YES];
+}
+
+- (void)useUIImagePicker{
+    NSLog(@"useUIImagePicker");
 }
 
 #pragma UIImageControllerDelegate

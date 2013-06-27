@@ -13,4 +13,5 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#define MAIN_FRAME [[UIScreen mainScreen] bounds]
+#define FULL_FRAME [[UIScreen mainScreen] bounds] //[320,480]
+#define FRAME_WITH_STATUS_BAR [[UIScreen mainScreen] applicationFrame] //[320,460]

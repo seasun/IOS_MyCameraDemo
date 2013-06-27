@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CameraOverlayView : UIView
+@protocol CameraOverlayViewDelegate <NSObject>
+@optional
+- (void)cancelUIImagePicker;
+- (void)useUIImagePicker;
 
+@end
+
+
+@interface CameraOverlayView : UIView
+@property(nonatomic, weak) id<CameraOverlayViewDelegate> delegate;
 @end

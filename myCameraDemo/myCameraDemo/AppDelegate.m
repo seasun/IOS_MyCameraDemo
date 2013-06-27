@@ -19,7 +19,7 @@
     
     MainViewController *viewController = [[MainViewController alloc]init];
 
-    self.window.rootViewController = viewController;
+    [self.window setRootViewController:viewController];
     [self.window makeKeyAndVisible];
     return YES;
 }
