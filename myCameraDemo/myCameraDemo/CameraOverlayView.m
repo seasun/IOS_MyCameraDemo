@@ -29,8 +29,8 @@
         [cancelButton.layer setMasksToBounds:YES];
         [cancelButton addTarget:self action:@selector(cancelUIImagePickerView:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:cancelButton];
-        
-        UIButton *useButton = [[UIButton alloc]initWithFrame:CGRectMake(FULL_FRAME.size.width-buttonSize.width-10, cancelButton.frame.origin.y, buttonSize.width, buttonSize.height)];
+ 
+        UIButton *useButton = [[UIButton alloc]initWithFrame:CGRectMake((FULL_FRAME.size.width-buttonSize.width)/2, cancelButton.frame.origin.y, buttonSize.width, buttonSize.height)];
         useButton.backgroundColor = [UIColor blackColor];
         useButton.layer.cornerRadius = 10;
         [useButton setTitle:@"确定" forState:UIControlStateNormal];
@@ -40,6 +40,17 @@
         [useButton.layer setMasksToBounds:YES];
         [useButton addTarget:self action:@selector(useUIImagePickerView:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:useButton];
+        
+        UIButton *openPicButton = [[UIButton alloc]initWithFrame:CGRectMake(FULL_FRAME.size.width-buttonSize.width-10, cancelButton.frame.origin.y, buttonSize.width, buttonSize.height)];
+        openPicButton.backgroundColor = [UIColor blackColor];
+        openPicButton.layer.cornerRadius = 10;
+        [openPicButton setTitle:@"图片" forState:UIControlStateNormal];
+        [openPicButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [openPicButton setBackgroundImage:[self createImageWithColor:[UIColor blackColor]] forState:UIControlStateNormal];
+        [openPicButton setBackgroundImage:[self createImageWithColor:[UIColor blueColor]] forState:UIControlStateHighlighted];
+        [openPicButton.layer setMasksToBounds:YES];
+        [openPicButton addTarget:self action:@selector(openPhotoLibrary:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:openPicButton];
     }
     return self;
 }
@@ -65,6 +76,9 @@
     [_delegate useUIImagePicker];
 }
 
+- (void)openPhotoLibrary:(UIButton *)sender{
+    [_delegate openPhotoLibrary];
+}
 
 //画一个实心圆
 -(void)drawEllipse:(CGContextRef)context{

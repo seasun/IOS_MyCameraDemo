@@ -39,10 +39,11 @@
     [cameraButton setTitleShadowColor:[UIColor grayColor] forState:UIControlStateNormal];
     [cameraButton addTarget:self action:@selector(showCamera:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:cameraButton];
+    imageController = [[UIImagePickerController alloc]init];
 }
 
 - (void)showCamera:(UIButton *)sender{
-    imageController = [[UIImagePickerController alloc]init];
+    
     imageController.sourceType =
     //    UIImagePickerControllerSourceTypePhotoLibrary; //图片库,默认 先分类，再跳到图片集
     //    UIImagePickerControllerSourceTypeSavedPhotosAlbum;//胶卷 图片流的呈现方式
@@ -51,9 +52,9 @@
     imageController.mediaTypes =[UIImagePickerController availableMediaTypesForSourceType:UIImagePickerControllerSourceTypeCamera];
     CameraOverlayView *overlayView = [[CameraOverlayView alloc]initWithFrame:CGRectMake(0, 0, 320, FULL_FRAME.size.height-1)];
     overlayView.delegate = self;
-//    imageController.cameraOverlayView = overlayView;
+    imageController.cameraOverlayView = overlayView;
 //    NSLog(@"MAIN_FRAME_NOT_BOUNDS:%@",NSStringFromCGRect(FULL_FRAME));
-//    imageController.showsCameraControls = NO;
+    imageController.showsCameraControls = NO;
     imageController.delegate = self;
 //    CGAffineTransform cameraTransform = CGAffineTransformMakeScale(1.23, 1.23);
 //    imageController.cameraViewTransform = cameraTransform;
@@ -67,16 +68,25 @@
 
 - (void)useUIImagePicker{
     NSLog(@"useUIImagePicker");
+    [imageController takePicture];
+}
+
+- (void)openPhotoLibrary{
+    imageController.sourceType =
+    UIImagePickerControllerSourceTypePhotoLibrary; //图片库,默认 先分类，再跳到图片集
+    //    UIImagePickerControllerSourceTypeSavedPhotosAlbum;//胶卷 图片流的呈现方式
+//    UIImagePickerControllerSourceTypeCamera; //摄像头
 }
 
 #pragma UIImageControllerDelegate
+//拍照与选取图片都会走这个方法
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     NSString *mediaType = [info objectForKey: UIImagePickerControllerMediaType];
     UIImage *originalImage, *editedImage, *imageToSave;
     
     // Handle a still image capture
     if (CFStringCompare ((CFStringRef) mediaType, kUTTypeImage, 0)
-        == kCFCompareEqualTo) {
+        == kCFCompareEqualTo && [info objectForKey:UIImagePickerControllerMediaMetadata]!=nil) {//UIImagePickerControllerMediaMetadata不为nil表示拍照
         
         editedImage = (UIImage *) [info objectForKey:
                                    UIImagePickerControllerEditedImage];
@@ -88,7 +98,8 @@
         } else {
             imageToSave = originalImage;
         }
-        
+        NSData *imageData = UIImageJPEGRepresentation(imageToSave, 0.032);
+        imageToSave = [[UIImage alloc]initWithData:imageData];
         // Save the new image (original or edited) to the Camera Roll
         UIImageWriteToSavedPhotosAlbum (imageToSave, nil, nil , nil);
     }
@@ -106,7 +117,6 @@
         }
     }
     [picker dismissViewControllerAnimated:YES completion:nil];
-//    [[picker parentViewController] dismissModalViewControllerAnimated: YES];
 }
 
 - (void)didReceiveMemoryWarning

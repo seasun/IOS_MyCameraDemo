@@ -12,7 +12,7 @@
 @optional
 - (void)cancelUIImagePicker;
 - (void)useUIImagePicker;
-
+- (void)openPhotoLibrary;
 @end
 
 
